@@ -35,6 +35,16 @@ return {}, {
 	),
 
 
+	s({ trig = "st", dresc = "s.t." },
+		{ t("\\text{ s.t. } ") },
+		{ condition = in_math }
+	),
+	s({ trig = "([^%w])st ", regTrig = true, wordTrig = false, dresc = "such that" },
+		{ t(" sucht that") },
+		{ condition = not in_math }
+	),
+
+
 
 	-- LOGICAL SYMBOLS
 	--
@@ -82,9 +92,15 @@ return {}, {
 		{ t(" \\supseteq ") },
 		{ condition = in_math }
 	),
-
-
-
+	-- Subgroups
+	s({ trig = "([^%\\%a])nsg ", regTrig = true, wordTrig = false, dresc = "/triangleleft" },
+		{ t(" \\triangleleft ") },
+		{ condition = in_math }
+	),
+	s({ trig = "([^%\\%a])nsge", regTrig = true, wordTrig = false, dresc = "/triangleleft" },
+		{ t(" \\trianglelefteq ") },
+		{ condition = in_math }
+	),
 	-- PARENTHESIS
 	--
 

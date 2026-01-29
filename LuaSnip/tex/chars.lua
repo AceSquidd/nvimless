@@ -24,12 +24,12 @@ return {}, {
             {t("\\beta")},
             {condition = in_mathzone}
       ),
-      s({trig = "gc", dresc = "gamma"},
+       s({trig = "gc", dresc = "gamma"},
             {t("\\gamma")},
             {condition = in_mathzone}
       ),
-      s({trig = "gC", dresc = "Gamma"},
-            {t("\\Gamma")},
+	  s({trig = "(^[_])gc", dresc = "gamma"},
+            {t("\\gamma")},
             {condition = in_mathzone}
       ),
       s({trig = "gp", dresc = "phi"},
@@ -80,8 +80,12 @@ return {}, {
 
    -- Groups (TO DO)
 
-	s({ trig = "zz "},
-		{ t("\\mathbb{Z}/ \\mathbb{Z}") },
+	s({ trig = "znz "},
+		{ t("\\mathbb{Z}/n\\mathbb{Z}") },
+		{ condition = in_mathzone }
+	),
+	s({ trig = "zpz "},
+		{ t("\\mathbb{Z}/p\\mathbb{Z}") },
 		{ condition = in_mathzone }
 	),
 }

@@ -46,4 +46,16 @@ return {}, {
 		),
 		{ condtion = line_begin }
 	),
+	s({ trig = "PRP" },
+		fmta(
+			[[
+			\begin{prp}
+    <>
+			\end{prp}
+            ]],
+			-- insert nodes in angel brackets
+			{ i(1) }
+		),
+		{ condtion = line_begin }
+	),
 }
