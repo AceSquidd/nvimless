@@ -121,10 +121,10 @@ local augroup = vim.api.nvim_create_augroup("UserConfig", {})
 
 -- Highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {
-  group = augroup,
-  callback = function()
-    vim.highlight.on_yank()
-  end,
+	group = augroup,
+	callback = function()
+		vim.highlight.on_yank()
+	end,
 })
 
 
@@ -195,14 +195,63 @@ require("mason-tool-installer").setup({
 })
 
 
--- COLORSCHEME
+
+-- ============================================================================
+-- LATEX FORMATTING
+-- ============================================================================
+
+
+function _G.format_latex_clean()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  -- run latexindent silently
+  vim.fn.system('latexindent -r -w -l ".latexindent.yaml" ' .. vim.fn.expand('%:p'))
+  -- reload buffer
+  vim.cmd('edit!')
+  vim.api.nvim_win_set_cursor(0, cursor)
+end
+
+vim.api.nvim_set_keymap('n', '<leader>f', ':lua format_latex_clean()<CR>', { noremap = true, silent = true })
+
+
+
+
+----------------------------------------- COLORSCHEME ---------------------------------------------
 vim.cmd("colorscheme retrobox")
 
--- SNIPPETS
+------------------------------------------- SNIPPETS ----------------------------------------------
 local ls = require("luasnip")
-ls.setup({ enable_autosnippets = true })
-require("luasnip.loaders.from_lua").load({ paths = "./LuaSnip/" })
 
-map("i", "<C-e>", function() ls.expand_or_jump(1) end, { silent = true })
+-- Load Snippets
+
+ls.setup({ enable_autosnippets = true })
+require("luasnip.loaders.from_lua").lazy_load({ paths = vim.fn.stdpath("config") .. "/lua/snippets" })
+ls.config.set_config({
+  enable_autosnippets = true,
+  history = true,
+  updateevents = "TextChanged,TextChangedI",
+})
+
+-- keybinds
+
+-- supertabs
+
+map({ "i", "s" }, "<Tab>", function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  else
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes("<Tab>", true, true, true),
+      "n",
+      true
+    )
+  end
+end, { silent = true })
+vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  end
+end, { silent = true })
+
+
 map({ "i", "s" }, "<C-J>", function() ls.jump(1) end, { silent = true })
 map({ "i", "s" }, "<C-K>", function() ls.jump(-1) end, { silent = true })
