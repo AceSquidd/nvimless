@@ -17,12 +17,17 @@ local logic = {
 	lor     = "\\lor",
 
 	-- sets
+	["in"]  = "\\in",
 	["ss "] = "\\subset",
 	sse     = "\\subseteq",
 	ssn     = "\\subsetneq",
 	cup     = "\\cup",
+	dcup    = "\\sqcup",
 	cap     = "\\cap",
-	["in"]  = "\\in"
+	dcap    = "\\sqcap",
+
+	empty   = "\\emptyset",
+	ify     = "\\infty",
 }
 
 

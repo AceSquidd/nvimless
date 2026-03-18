@@ -8,7 +8,26 @@ local fmta = require("luasnip.extras.fmt").fmta
 local u    = require("snippets.tex.utils")
 
 return {}, {
+	-- underscripts
+	s({
+		trig = "([a-zA-Z])([0-9]+|[nm]) ",
+		regTrig = true,
+		wordTrig = false,
+		snippetType = "autosnippet",
+	}, {
+		f(function(_, snip)
+			local base = snip.captures[1]
+			local sub = snip.captures[2]
 
+			if #sub == 1 then
+				return base .. "_" .. sub .. " "
+			else
+				return base .. "_{" .. sub .. "} "
+			end
+		end)
+	}, {
+		condition = u.in_math
+	}),
 
 
 	-- vector for: x_1,\dots,x_n
@@ -26,6 +45,9 @@ return {}, {
 			i(2, "n"), -- index
 		}
 	),
+
+
+
 	-- tikz universal prop small diagram
 	s(
 		{ trig = "smalluniprop", condition = not u.in_math },
@@ -47,7 +69,7 @@ return {}, {
 		)
 	),
 
-	-- tikz universal prop large diagram 
+	-- tikz universal prop large diagram
 	s(
 		{ trig = "uniprop ", condition = not u.in_math },
 		fmta(

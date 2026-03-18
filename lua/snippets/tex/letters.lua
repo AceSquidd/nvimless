@@ -63,6 +63,11 @@ local mathcal = {
 	cM = "\\mathcal{M}",
 }
 
+-- GROUPS
+local groups = {
+	Sn = "S^n",
+}
+
 
 -- implementation
 
@@ -87,6 +92,7 @@ end
 add_inside(greek)
 add_inside(mathbb)
 add_inside(mathcal)
+add_inside(groups)
 
 -- from here, these are implementations of above symbols into text mode.
 -- "let ga be a constant" will expand into "let $ \alpha $ be a constant".
