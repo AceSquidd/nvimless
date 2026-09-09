@@ -7,29 +7,33 @@ local fmta = require("luasnip.extras.fmt").fmta
 
 local u    = require("snippets.tex.utils")
 
-return {}, {
-	-- underscripts
-	s({
-		trig = "([a-zA-Z])([0-9]+|[nm]) ",
+
+
+local function make_subscript(_, snip)
+	local base = snip.captures[1]
+	local sub = snip.captures[2]
+
+	if #sub == 1 then
+		return base .. "_" .. sub
+	end
+
+	return base .. "_{" .. sub .. "}"
+end
+
+local subscript = s(
+	{
+		trig = "([a-zA-Z])([0-9]+)",
 		regTrig = true,
 		wordTrig = false,
 		snippetType = "autosnippet",
-	}, {
-		f(function(_, snip)
-			local base = snip.captures[1]
-			local sub = snip.captures[2]
-
-			if #sub == 1 then
-				return base .. "_" .. sub .. " "
-			else
-				return base .. "_{" .. sub .. "} "
-			end
-		end)
-	}, {
-		condition = u.in_math
-	}),
+		condition = u.in_math,
+	},
+	f(make_subscript)
+)
 
 
+local snippets = {
+	subscript,
 	-- vector for: x_1,\dots,x_n
 	s(
 		{
@@ -91,3 +95,53 @@ return {}, {
 	)
 
 }
+
+-- parenthesis
+
+local delimiters = {
+	["sb "] = { "\\left(", "\\right)" },
+	["sq "] = { "\\left[", "\\right]" },
+	["sc "] = { "\\left\\{", "\\right\\}" },
+}
+
+for trig, delim in pairs(delimiters) do
+	table.insert(
+		snippets,
+		s(
+			{
+				trig = trig,
+				wordTrig = false,
+				snippetType = "autosnippet",
+				condition = u.in_math,
+			},
+			{
+				t(delim[1]),
+				i(1),
+				t(delim[2]),
+				i(0),
+			}
+		)
+	)
+end
+
+-- subscripts for \
+
+table.insert(
+	snippets,
+	s(
+		{
+			trig = "_\\",
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = u.in_math,
+		},
+		{
+			t("_{\\"),
+			i(1),
+			t("}"),
+			i(0),
+		}
+	)
+)
+
+return {}, snippets

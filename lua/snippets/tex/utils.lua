@@ -21,6 +21,87 @@ function M.not_in_math()
 end
 
 
+-- differentiate between mathzones
+--   Since VimTex is not precise enough, we brute force it. Detects:
+--   $ ... $ or $$ ... $$ or plain text
+-- Escaped dollar signs (\$) and comments are ignored.
+function M.math_context()
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local row = cursor[1]
+	local col = cursor[2]
+
+	local lines = vim.api.nvim_buf_get_lines(0, 0, row, false)
+
+	-- Only inspect text before the cursor on the current line.
+	if #lines > 0 then
+		lines[#lines] = lines[#lines]:sub(1, col)
+	end
+
+	local mode = "text"
+
+	for _, line in ipairs(lines) do
+		local j = 1
+
+		while j <= #line do
+			local char = line:sub(j, j)
+
+			-- Count backslashes immediately before this character.
+			local slashes = 0
+			local k = j - 1
+
+			while k >= 1 and line:sub(k, k) == "\\" do
+				slashes = slashes + 1
+				k = k - 1
+			end
+
+			local escaped = slashes % 2 == 1
+
+			-- Ignore the rest of a LaTeX comment.
+			if char == "%" and not escaped then
+				break
+			end
+
+			if char == "$" and not escaped then
+				-- $$ delimiter
+				if line:sub(j, j + 1) == "$$" then
+					if mode == "display" then
+						mode = "text"
+					elseif mode == "text" then
+						mode = "display"
+					end
+
+					j = j + 2
+
+				-- $ delimiter
+				else
+					if mode == "inline" then
+						mode = "text"
+					elseif mode == "text" then
+						mode = "inline"
+					end
+
+					j = j + 1
+				end
+			else
+				j = j + 1
+			end
+		end
+	end
+
+	return mode
+end
+
+
+function M.in_inline_math()
+	return M.math_context() == "inline"
+end
+
+
+function M.in_display_math()
+	return M.math_context() == "display"
+end
+
+
 -- ---------------------------------------------------------------------------
 -- REGEX
 -- ---------------------------------------------------------------------------

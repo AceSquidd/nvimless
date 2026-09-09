@@ -48,6 +48,7 @@ local mathbb  = {
 	bz = "\\mathbb{Z}",
 	bq = "\\mathbb{Q}",
 	br = "\\mathbb{R}",
+	bc = "\\mathbb{C}",
 }
 
 -- MATHCAL
