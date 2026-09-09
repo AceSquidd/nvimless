@@ -68,67 +68,21 @@ local groups = {
 	Sn = "S^n",
 }
 
-
 -- implementation
 
-local snippets = {}
+local snippets = u.math_snippets(
+	greek,
+	mathbb,
+	mathcal,
+	groups
+)
 
-local function add_inside(tbl)
-	for trig, cmd in pairs(tbl) do
-		table.insert(snippets,
-			s(
-				{
-					trig = "(" .. u.regex_math .. ")" .. trig,
-					regTrig = true,
-					wordTrig = false,
-					condition = u.in_math,
-				},
-				u.expand_with_capture(cmd)
-			)
-		)
-	end
-end
-
-add_inside(greek)
-add_inside(mathbb)
-add_inside(mathcal)
-add_inside(groups)
-
--- from here, these are implementations of above symbols into text mode.
--- "let ga be a constant" will expand into "let $ \alpha $ be a constant".
-
-local function add_enter(tbl)
-	for trig, cmd in pairs(tbl) do
-		table.insert(snippets,
-			s(
-				{
-					trig = trig .. " ",
-					wordTrig = true,
-					condition = not u.in_math,
-				},
-				u.expand_text_math(cmd)
-			)
-		)
-	end
-end
-
-add_enter(greek)
--- no need for mathbb
-add_enter(mathcal)
-
-table.insert(snippets,
-	s(
-		{
-			trig = " m(.)%s",
-			regTrig = true,
-			wordTrig = false,
-			snippetType = "autosnippet",
-			condition = function() return not u.in_math() end,
-		},
-		d(1, function(args, snip)
-			return sn(nil,u.prepend(" ", u.expand_text_math(snip.captures[1])))
-		end)
-
+-- snippets with access from outside math
+u.extend(
+	snippets,
+	u.enter_math_snippets(
+		greek,
+		mathcal
 	)
 )
 

@@ -50,7 +50,7 @@ return {}, {
 
 	-- tikz universal prop small diagram
 	s(
-		{ trig = "smalluniprop", condition = not u.in_math },
+		{ trig = "smalluniprop", condition = u.not_in_math },
 		fmta(
 			[[
 \begin{tikzcd}
