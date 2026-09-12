@@ -13,7 +13,7 @@ local function add(trig, expansion, condition)
 		s(
 			{
 				trig = trig,
-				wordTrig = false,
+				wordTrig = true,
 				snippetType = "autosnippet",
 				condition = condition,
 			},
